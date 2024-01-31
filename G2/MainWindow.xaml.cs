@@ -33,6 +33,12 @@ namespace G2
             ellipsesCanvas.Children.Clear();
             if(int.TryParse(numberInput.Text, out int ellipsesNum))
             {
+                int ellipseWidth = 100;
+                int ellipseHeight = 50;
+                int margin = 10;
+                int ellipsesPerRow = (int)(ellipsesCanvas.ActualWidth / (ellipseWidth + margin));
+                bool ellipsesShown = false;
+
                 for (int i = 0; i < ellipsesNum; i++)
                 {
                     var ellipse = new Ellipse
@@ -42,9 +48,25 @@ namespace G2
                         Height = 50,
                         Stroke = Brushes.Black
                     };
-                    Canvas.SetLeft(ellipse, 10 + i * 110);
-                    Canvas.SetTop(ellipse, 10);
-                    ellipsesCanvas.Children.Add(ellipse);
+                    int row = i / ellipsesPerRow;
+                    int column = i % ellipsesPerRow;
+
+                    Canvas.SetLeft(ellipse, margin + column * (ellipseWidth + margin));
+                    Canvas.SetTop(ellipse, margin + row * (ellipseHeight + margin));
+
+                    if (Canvas.GetTop(ellipse) + ellipseHeight <= ellipsesCanvas.ActualHeight)
+                    {
+                        ellipsesCanvas.Children.Add(ellipse);
+                    }
+                    else
+                    {
+                        if (!ellipsesShown)
+                        {
+                            AddEllipsisToCanvas(row, column);
+                            ellipsesShown = true;
+                        }
+                        break;
+                    }
                 }
             }
         }
